@@ -1,26 +1,48 @@
 ﻿<nav class="zg-navbar zg-navbar-sticky zg-light">
     <div class="zg-navbar-container">
-        <a class="zg-navbar-brand" href="#">Rates</a>
-
-        <ul class="zg-nav">
-            <li class="">
-                <a class="zg-nav-link zg-active" href="#">Active</a>
-            </li>
-            <li class="">
-                <a class="zg-nav-link" href="#">Link</a>
-            </li>
-            <li class="">
-                <a class="zg-nav-link" href="#">Link</a>
-            </li>
-            <li class="">
-                <a class="zg-nav-link zg-disabled">Disabled</a>
-            </li>
-        </ul>
-        <a class="zg-nav-link" href="#">Login</a>
+        <div class="zg-navbar-brand">
+            <a href="#">Rates</a>
+            <div class="zg-navbar-menu-toggler" @onclick="ToggleMenu">
+                <span class="oi oi-menu" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="zg-navbar-menu" style="display:@display">
+            <ul class="zg-nav">
+                <li class="">
+                    <a class="zg-nav-link zg-active" href="#">Active</a>
+                </li>
+                <li class="">
+                    <a class="zg-nav-link" href="#">Link</a>
+                </li>
+                <li class="">
+                    <a class="zg-nav-link" href="#">Link</a>
+                </li>
+                <li class="">
+                    <a class="zg-nav-link zg-disabled">Disabled</a>
+                </li>
+            </ul>
+        </div>
+        <div class="zg-navbar-end">
+            @*<a class="zg-nav-link" href="">Login</a>*@
+            
+            @show
+        </div>
     </div>
 </nav>
-<br />
 
 @code {
+    bool show = true;
+    string display = "";
 
+    private void ToggleMenu()
+    {
+        if (show)
+        {
+            display = "block"; 
+        }else
+        {
+            display = "none";
+        }
+        show = !show;
+    }
 }
