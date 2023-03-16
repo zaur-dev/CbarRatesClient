@@ -1,6 +1,23 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-html, body {
+:root {
+    /*Dark theme colors*/
+    --bg-color-dark: #212529;
+    --bg-color-dark-lighter: #2b3035;
+    --color-dark: #adb5bd;
+    --color-dark-hover: #adb5bdbf;
+    /*Light theme colors*/
+    --bg-color-light: #fff;
+    --bg-color-light-darker: #f8f9fa;
+    --color-light: #212529;
+    --color-light-hover: #212529bf;
+    /*Nav link colors*/
+    --zg-nav-link-color: var(--color-light);
+    --zg-nav-link-hover-color: var(--color-light-hover);
+    --zg-nav-link-disabled-color: #808080;
+}
+
+/*html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -16,12 +33,12 @@ a, .btn-link {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
-}
+}*/
 
 .content {
     padding-top: 1.1rem;
 }
-
+/*
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }
@@ -32,7 +49,7 @@ a, .btn-link {
 
 .validation-message {
     color: red;
-}
+}*/
 
 #blazor-error-ui {
     background: lightyellow;

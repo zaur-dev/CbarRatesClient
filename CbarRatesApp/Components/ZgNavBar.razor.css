@@ -1,0 +1,87 @@
+﻿
+.zg-navbar {
+    color: #212529;
+    background-color: #f8f9fa;
+    padding: 0.5rem 0;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 1px 5px;
+
+}
+
+.zg-navbar-container {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: calc(1.5rem * .5);
+    padding-left: calc(1.5rem * .5);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.zg-navbar-brand {
+    color: var(--zg-nav-link-color);
+    font-size: 1.5rem;
+    font-weight:600;
+    text-decoration: none;
+    white-space: nowrap;
+    margin-right: 1rem;
+    padding: 0.5rem 0;
+}
+
+.zg-nav {
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.zg-nav-link {
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: var(--zg-nav-link-color);
+}
+
+    .zg-nav-link:hover {
+        color: var(--zg-nav-link-hover-color);
+        
+    }
+
+.zg-active {
+    font-weight: 600;
+}
+
+.zg-disabled {
+    color: var(--zg-nav-link-disabled-color);
+    pointer-events: none;
+    cursor: default;
+}
+
+.zg-light {
+    color: var(--color-light);
+    background-color: var(--bg-color-light-darker);
+    --zg-nav-link-color: var(--color-light);
+    --zg-nav-link-hover-color: var(--color-light);
+}
+
+.zg-dark {
+    color: var(--color-dark);
+    background-color: var(--bg-color-dark-lighter);
+    --zg-nav-link-color: var(--color-dark);
+    --zg-nav-link-hover-color: var(--color-dark-hover);
+}
+
+
+.zg-navbar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
