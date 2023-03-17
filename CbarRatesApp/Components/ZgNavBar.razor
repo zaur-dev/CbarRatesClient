@@ -1,4 +1,7 @@
-﻿<nav class="zg-navbar zg-navbar-sticky zg-light">
+﻿@implements IDisposable
+@inject NavigationManager NavigationManager
+
+<nav class="zg-navbar zg-navbar-sticky @theme">
     <div class="zg-navbar-container">
         <div class="zg-navbar-brand">
             <a href="#">Rates</a>
@@ -6,26 +9,23 @@
                 <span class="oi oi-menu" aria-hidden="true"></span>
             </div>
         </div>
-        <div class="zg-navbar-menu" style="display:@display">
+        <div class="zg-navbar-menu @display">
             <ul class="zg-nav">
-                <li class="">
-                    <a class="zg-nav-link zg-active" href="#">Active</a>
-                </li>
-                <li class="">
-                    <a class="zg-nav-link" href="#">Link</a>
-                </li>
-                <li class="">
-                    <a class="zg-nav-link" href="#">Link</a>
-                </li>
-                <li class="">
-                    <a class="zg-nav-link zg-disabled">Disabled</a>
-                </li>
+                @if (Links != null)
+                {
+                    foreach (var item in Links)
+                    {
+                        <li class="zg-nav-item">
+                            <NavLink Match="NavLinkMatch.All" ActiveClass="zg-active" href=" @item.Value">@item.Key</NavLink>
+                        </li>
+                    }
+                }
             </ul>
         </div>
-        <div class="zg-navbar-end">
-            @*<a class="zg-nav-link" href="">Login</a>*@
-            
-            @show
+        <div class="zg-navbar-end @display">
+            <div class="zg-nav-item">
+                <NavLink Match="NavLinkMatch.All" href="login">Login</NavLink>
+            </div>
         </div>
     </div>
 </nav>
@@ -33,16 +33,41 @@
 @code {
     bool show = true;
     string display = "";
+    string theme = "";
+
+    [Parameter]
+    public bool Dark { get; set; } = default;
+
+    [Parameter]
+    public Dictionary<string, string>? Links { get; set; }
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += LocationChanged;
+        SetTheme();
+    }
+
+    private void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        show = true;
+        display = "zg-hide";
+        StateHasChanged();
+    }
 
     private void ToggleMenu()
     {
-        if (show)
-        {
-            display = "block"; 
-        }else
-        {
-            display = "none";
-        }
+        display = show ? "zg-show" : "zg-hide";
         show = !show;
+    }
+
+    private void SetTheme()
+    {
+        theme = Dark ? "zg-dark" : "zg-light";
+    }
+
+    void IDisposable.Dispose()
+    {
+        // Unsubscribe from the event when our component is disposed
+        NavigationManager.LocationChanged -= LocationChanged;
     }
 }

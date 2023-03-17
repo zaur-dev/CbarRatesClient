@@ -1,17 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
 <div>
-    <div>
-        @*<NavMenu />*@
-    </div>
-
+    <CbarRatesApp.Components.ZgNavBar Dark="true" Links="links"/>
     <main>
-        
-            <CbarRatesApp.Components.ZgNavBar />
-        
-
         <article>
             @Body
         </article>
     </main>
 </div>
+
+@code{
+    Dictionary<string, string> links;
+
+    protected override void OnInitialized()
+    {
+        links = new Dictionary<string, string>
+        {
+            { "Home", "/" },
+            { "Test", "test" },
+            { "Counter", "counter" },
+        };
+    }
+}

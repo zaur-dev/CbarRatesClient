@@ -24,7 +24,7 @@
 }
 
 .zg-navbar-brand {
-    display:flex;
+    display: flex;
     color: var(--zg-nav-link-color);
     font-size: 1.5rem;
     font-weight: 600;
@@ -58,19 +58,19 @@
     list-style: none;
 }
 
-.zg-nav-link {
+.zg-nav-item ::deep a {
     padding: 0.5rem 1rem;
     text-decoration: none;
     color: var(--zg-nav-link-color);
 }
 
-    .zg-nav-link:hover {
+    .zg-nav-item ::deep a:hover {
         color: var(--zg-nav-link-hover-color);
     }
 
-.zg-active {
-    font-weight: 600;
-}
+    .zg-nav-item ::deep a.zg-active {
+        font-weight: 600;
+    }
 
 .zg-disabled {
     color: var(--zg-nav-link-disabled-color);
@@ -78,13 +78,11 @@
     cursor: default;
 }
 
-
-
 .zg-light {
     color: var(--color-light);
     background-color: var(--bg-color-light-darker);
     --zg-nav-link-color: var(--color-light);
-    --zg-nav-link-hover-color: var(--color-light);
+    --zg-nav-link-hover-color: var(--color-light-hover);
 }
 
 .zg-dark {
@@ -104,10 +102,6 @@
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
-    
-}
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
     .zg-navbar-container {
         display: block;
     }
@@ -117,9 +111,19 @@
     }
 
     .zg-navbar-menu {
-        display: none;
+        max-height: 0;
+        overflow: hidden;
         flex-grow: 0;
         order: 10;
+    }
+
+    .zg-navbar-end {
+        max-height: 0;
+        overflow: hidden;
+    }
+
+    .zg-nav-item {
+        padding: 0.5rem 0rem;
     }
 
     .zg-navbar-menu-toggler {
@@ -127,6 +131,25 @@
         flex-grow: 1;
         justify-content: end;
     }
+
+    .zg-hide {
+        max-height: 0;
+        overflow: hidden;
+        
+        transition-property:max-height;
+        transition-duration: 0.1s;
+        transition-timing-function: ease;
+    }
+
+    .zg-show {
+        max-height: 600px;
+        transition-property: max-height;
+        transition-duration: 0.5s;
+        transition-timing-function: ease;
+    }
+}
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
 }
 /* Medium devices (landscape tablets, 768px and up) */
 @media only screen and (min-width: 768px) {
