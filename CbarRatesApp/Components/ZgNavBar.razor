@@ -23,9 +23,13 @@
             </ul>
         </div>
         <div class="zg-navbar-end @display">
-            <div class="zg-nav-item">
-                <NavLink Match="NavLinkMatch.All" href="login">Login</NavLink>
-            </div>
+            <ZgThemeToggler />
+            <div class="vr"></div>
+            <ul class="zg-nav">
+                <li class="zg-nav-item">
+                    <NavLink Match="NavLinkMatch.All" href="login">Login</NavLink>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
@@ -44,7 +48,7 @@
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += LocationChanged;
-        SetTheme();
+        //SetTheme();
     }
 
     private void LocationChanged(object sender, LocationChangedEventArgs e)
@@ -62,7 +66,7 @@
 
     private void SetTheme()
     {
-        theme = Dark ? "zg-dark" : "zg-light";
+        //theme = Dark ? "zg-dark" : "zg-light";
     }
 
     void IDisposable.Dispose()

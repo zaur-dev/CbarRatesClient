@@ -1,0 +1,54 @@
+﻿@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+<div class="px-3 py-1">
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="" @bind="dark">
+        <label class="form-check-label" for="">Dark</label>
+    </div>
+</div>
+
+
+@code {
+    private bool dark;
+    private IJSObjectReference? module;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await CheckColorScheme();
+        }
+        
+        await SetThemeAsync();
+    }
+
+    private async Task SetThemeAsync()
+    {
+        module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/ZgThemeToggler.razor.js");
+
+        if (dark)
+        {
+            await module.InvokeVoidAsync("SetThemeAttribute", "dark");
+        }
+        else
+        {
+            await module.InvokeVoidAsync("SetThemeAttribute", "light");
+        }
+    }
+    private async Task CheckColorScheme()
+    {
+        module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/ZgThemeToggler.razor.js");
+
+        dark = await module.InvokeAsync<bool>("CheckColorScheme");
+        StateHasChanged();
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+}
