@@ -1,0 +1,154 @@
+﻿
+.zg-navbar {
+    /*color: #212529;
+    background-color: #f8f9fa;*/
+    padding: 0.5rem 0;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0px 1px 5px;
+}
+
+.zg-navbar-container {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding-right: calc(1.5rem * .5);
+    padding-left: calc(1.5rem * .5);
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.zg-navbar-brand {
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-right: 1rem;
+    padding: 0.5rem 0;
+}
+
+    .zg-navbar-brand a {
+        color: var(--bs-body-color);
+        text-decoration: none;
+    }
+
+.zg-navbar-menu {
+    flex-grow: 1;
+}
+
+.zg-navbar-menu-toggler {
+    display: none;
+    padding: 0.5rem
+}
+
+.zg-navbar-end {
+    display: flex;
+    align-items: center;
+}
+
+.zg-nav {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.zg-nav-item ::deep a {
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: var(--bs-body-color);
+}
+
+    .zg-nav-item ::deep a:hover {
+       /* Add color on hover*/
+    }
+
+    .zg-nav-item ::deep a.zg-active {
+        font-weight: 600;
+    }
+
+.zg-disabled {
+    color: var(--zg-nav-link-disabled-color);
+    pointer-events: none;
+    cursor: default;
+}
+
+.zg-navbar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .zg-navbar-container {
+        display: block;
+    }
+
+    .zg-nav {
+        display: block;
+    }
+
+    .zg-navbar-menu {
+        max-height: 0;
+        overflow: hidden;
+        flex-grow: 0;
+        order: 10;
+    }
+
+    .zg-navbar-end {
+        display:block;
+        max-height: 0;
+        overflow: hidden;
+    }
+
+    .zg-nav-item {
+        padding: 0.5rem 0rem;
+    }
+
+    .zg-navbar-menu-toggler {
+        display: flex;
+        flex-grow: 1;
+        justify-content: end;
+    }
+
+    .zg-hide {
+        max-height: 0;
+        overflow: hidden;
+        
+        transition-property:max-height;
+        transition-duration: 0.1s;
+        transition-timing-function: ease;
+    }
+
+    .zg-show {
+        max-height: 600px;
+        transition-property: max-height;
+        transition-duration: 0.5s;
+        transition-timing-function: ease;
+    }
+}
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+}
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+}
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+}
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+}
+
+/* Extra extra large devices (extra large desktops, 1400px and up) */
+@media only screen and (min-width: 1400px) {
+}
