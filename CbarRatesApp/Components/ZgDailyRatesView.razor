@@ -1,0 +1,69 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using FxCore.Models;
+
+@inject HttpClient client
+
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between">
+            <div></div>
+            <div><input type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" class="form-control form-control-sm" @onchange="DateChanged" /></div>
+        </div>
+    </div>
+    <div class="card-body">
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                @message
+                <button type="button" class="btn-close" @onclick="_ => message = string.Empty"></button>
+            </div>
+        }
+        @if (fx != null)
+        {
+            <h5 class="card-title">Foreign exchange rates</h5>
+            <p class="card-text">Date: @fx.Date.ToShortDateString()</p>
+            <p class="card-text">Release date: @fx.CbarDate.ToShortDateString()</p>
+            <p class="card-text">All currencies quoted against the AZN (base currency).</p>
+
+            <ZgDailyRatesList Rates="fx.Rates" />
+        }
+    </div>
+</div>
+
+@code {
+    string message = string.Empty;
+    DailyFx? fx;
+
+    protected override async Task OnInitializedAsync()
+    {
+        fx = await client.GetFromJsonAsync<DailyFx>("api/get/latest");
+    }
+
+    private void DateChanged(ChangeEventArgs e)
+    {
+        message = string.Empty;
+        UpdateRates(DateTime.Parse(e.Value.ToString()));
+    }
+
+    private async Task UpdateRates(DateTime date)
+    {
+        StateHasChanged();
+        try
+        {
+            fx = await client.GetFromJsonAsync<DailyFx>($"api/get/{date.ToString("dd-MM-yyyy")}");
+        }
+        catch (HttpRequestException ex)
+        {
+            if (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                message = $"Rates for {date.ToString("dd-MM-yyyy")} not found";
+            }
+            else
+            {
+                message = ex.Message;
+            }
+        }
+        StateHasChanged();
+    }
+}

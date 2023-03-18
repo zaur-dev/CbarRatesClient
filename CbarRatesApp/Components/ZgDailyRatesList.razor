@@ -1,0 +1,33 @@
+﻿@using FxCore.Models;
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Currency</th>
+            <th scope="col">Code</th>
+            <th scope="col">Rate</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Rates)
+        {
+            <tr>
+                <td>@item.Nominal @item.Code</td>
+                <td>@item.Code</td>
+                <td>@item.Value</td>
+                <td><span class="oi oi-arrow-top" aria-hidden="true"></span></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@*<td><span class="oi oi-media-record" aria-hidden="true"></span></td>
+    <td><span class="oi oi-arrow-bottom" aria-hidden="true"></span></td>*@
+
+
+@code {
+
+    [Parameter, EditorRequired]
+    public List<Rate> Rates { get; set; }
+}
