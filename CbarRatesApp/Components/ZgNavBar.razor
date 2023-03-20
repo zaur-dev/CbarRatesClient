@@ -1,10 +1,10 @@
 ﻿@implements IDisposable
 @inject NavigationManager NavigationManager
 
-<nav class="zg-navbar zg-navbar-sticky @theme">
+<nav class="zg-navbar zg-navbar-sticky">
     <div class="zg-navbar-container">
         <div class="zg-navbar-brand">
-            <a href="#">Rates</a>
+            <a href="#">CBAR rates</a>
             <div class="zg-navbar-menu-toggler" @onclick="ToggleMenu">
                 <span class="oi oi-menu" aria-hidden="true"></span>
             </div>
@@ -24,12 +24,12 @@
         </div>
         <div class="zg-navbar-end @display">
             <ZgThemeToggler />
-            <div class="vr"></div>
+            @*<div class="vr"></div>
             <ul class="zg-nav">
                 <li class="zg-nav-item">
                     <NavLink Match="NavLinkMatch.All" href="login">Login</NavLink>
                 </li>
-            </ul>
+            </ul>*@
         </div>
     </div>
 </nav>
@@ -37,21 +37,16 @@
 @code {
     bool show = true;
     string display = "";
-    string theme = "";
-
-    [Parameter]
-    public bool Dark { get; set; } = default;
 
     [Parameter]
     public Dictionary<string, string>? Links { get; set; }
 
     protected override void OnInitialized()
     {
-        NavigationManager.LocationChanged += LocationChanged;
-        //SetTheme();
+        NavigationManager.LocationChanged += LocationHasChanged;
     }
 
-    private void LocationChanged(object sender, LocationChangedEventArgs e)
+    private void LocationHasChanged(object sender, LocationChangedEventArgs e)
     {
         show = true;
         display = "zg-hide";
@@ -64,14 +59,9 @@
         show = !show;
     }
 
-    private void SetTheme()
-    {
-        //theme = Dark ? "zg-dark" : "zg-light";
-    }
-
     void IDisposable.Dispose()
     {
         // Unsubscribe from the event when our component is disposed
-        NavigationManager.LocationChanged -= LocationChanged;
+        NavigationManager.LocationChanged -= LocationHasChanged;
     }
 }

@@ -1,20 +1,6 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 :root {
-    /*Dark theme colors*/
-    /*--bg-color-dark: #212529;
-    --bg-color-dark-lighter: #2b3035;
-    --color-dark: #adb5bd;
-    --color-dark-hover: #adb5bdbf;*/
-    /*Light theme colors*/
-    /*--bg-color-light: #fff;
-    --bg-color-light-darker: #f8f9fa;
-    --color-light: #212529;
-    --color-light-hover: #212529bf;*/
-    /*Nav link colors*/
-    /*--zg-nav-link-color: var(--color-light);
-    --zg-nav-link-hover-color: var(--color-light-hover);
-    --zg-nav-link-disabled-color: #808080;*/
 }
 
 /*html, body {
@@ -25,19 +11,11 @@ h1:focus {
     outline: none;
 }
 
-/*a, .btn-link {
-    color: #0071c1;
-}
-
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
-}*/
 
 .content {
     padding-top: 1.1rem;
 }
+
 /*
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
@@ -80,3 +58,90 @@ h1:focus {
         content: "An error has occurred."
     }
 
+
+
+/**
+  * Cascade
+  *
+  * @author jh3y - jheytompkins.com
+*/
+@-webkit-keyframes cascade {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-250%);
+        transform: translateY(-250%);
+    }
+
+    30%, 60% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        -webkit-transform: translateY(250%);
+        transform: translateY(250%);
+    }
+}
+
+@keyframes cascade {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-250%);
+        transform: translateY(-250%);
+    }
+
+    30%, 60% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        -webkit-transform: translateY(250%);
+        transform: translateY(250%);
+    }
+}
+
+.cascade {
+    height: 20px;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 20px);
+    grid-gap: 5px;
+}
+
+    .cascade div {
+        background: var(--bs-body-color);
+    }
+
+        .cascade div:nth-child(1) {
+            -webkit-animation: cascade 1.5s 0.15s ease infinite backwards;
+            animation: cascade 1.5s 0.15s ease infinite backwards;
+        }
+
+        .cascade div:nth-child(2) {
+            -webkit-animation: cascade 1.5s 0.3s ease infinite backwards;
+            animation: cascade 1.5s 0.3s ease infinite backwards;
+        }
+
+        .cascade div:nth-child(3) {
+            -webkit-animation: cascade 1.5s 0.45s ease infinite backwards;
+            animation: cascade 1.5s 0.45s ease infinite backwards;
+        }
+
+        .cascade div:nth-child(4) {
+            -webkit-animation: cascade 1.5s 0.6s ease infinite backwards;
+            animation: cascade 1.5s 0.6s ease infinite backwards;
+        }
+
+        .cascade div:nth-child(5) {
+            -webkit-animation: cascade 1.5s 0.75s ease infinite backwards;
+            animation: cascade 1.5s 0.75s ease infinite backwards;
+        }
+
+/*
+    End of Cascade
+*/
