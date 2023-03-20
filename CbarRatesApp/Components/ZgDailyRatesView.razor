@@ -4,7 +4,7 @@
 
 @inject HttpClient client
 
-<div class="card">
+<div class="card" style="width: 75rem;">
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <div></div>
@@ -22,14 +22,16 @@
         @if (fx != null)
         {
             <h5 class="card-title">Foreign exchange rates</h5>
-            <p class="card-text">Date: @fx.Date.ToShortDateString()</p>
-            <p class="card-text">Release date: @fx.CbarDate.ToShortDateString()</p>
-            <p class="card-text">All currencies quoted against the AZN (base currency).</p>
+            <p class="card-text">
+                Date: @fx.Date.ToShortDateString() <br/>
+                Release date: @fx.CbarDate.ToShortDateString()
+            </p>
 
             <ZgDailyRatesList Rates="fx.Rates" />
-        }else
+        }
+        else
         {
-          <ZgLoaderCascade />
+            <ZgLoaderCascade />
         }
     </div>
 </div>
