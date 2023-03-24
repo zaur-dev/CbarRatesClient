@@ -28,38 +28,31 @@
 
     protected override async Task OnInitializedAsync()
     {
-        fxList = await client.GetFromJsonAsync<List<DailyFx>>("api/get/range/01-01-2023/01-02-2023");
+        fxList = await client.GetFromJsonAsync<List<DailyFx>>("api/get/range/01-01-2023/31-01-2023");
 
-        List<string> labels = new();
-        List<string> data = new();
-        List<List<string>> datasets = new();
-
-        foreach (var item in fxList)
+        var data = new DataItem[fxList.Count];
+        for (int i = 0; i < fxList.Count; i++)
         {
-            labels.Add(item.Date.ToString("d"));
-            data.Add(item.Rates.Where(x => x.Code == "EUR").First().Value.ToString());
-
-        }
-
-        datasets.Add(data);
-
-
-        config = new ChartConfig();
-
-        config.Type = ChartType.line.ToString();
-        config.Data = new Data();
-        config.Data.Labels = labels.ToArray();
-
-        config.Data.Datasets = new Dataset[datasets.Count];
-        for (int i = 0; i < datasets.Count; i++)
-        {
-            config.Data.Datasets[i] = new Dataset()
+            data[i] = new DataItem()
                 {
-                    Label = "My data label",
-                    Data = datasets.ElementAt(i).ToArray()
+                    y = fxList[i].Rates.Where(x => x.Code == "EUR").First().Value.ToString(),
+                    x = fxList[i].Date.ToString("d")
                 };
-
         }
+
+        var dataset = new Dataset()
+            {
+                Label = "EUR",
+                Data = data
+            };
+
+        config = new ChartConfig()
+            {
+                Type = ChartType.line.ToString(),
+                Data = new Data() { Datasets = new Dataset[1] }
+            };
+
+        config.Data.Datasets[0] = dataset;
 
 
         showChart = true;
