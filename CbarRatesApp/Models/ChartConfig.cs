@@ -4,7 +4,7 @@
     {
         public string Type { get; set; }
         public Data Data { get; set; }
-        //public Options Options { get; set; }
+        public Options Options { get; set; }
     }
 
     public class Data
@@ -25,16 +25,14 @@
         public string y { get; set; }
     }
 
-    //public class Options
-    //{
-    //    public Parsing Parsing { get; set; }
-    //}
-
-    //public class Parsing
-    //{
-    //    public string xAxisKey { get; set; }
-    //    public string yAxisKey { get; set; }
-    //}
+    public class Options
+    {
+        public bool Responsive { get; set; }
+        public bool MaintainAspectRatio { get; set; }
+        public int AspectRatio { get; set; }
+        //public string OnResize { get; set; }
+        public int ResizeDelay { get; set; }
+    }
 
 
     public enum ChartType

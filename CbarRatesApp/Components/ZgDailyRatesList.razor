@@ -1,6 +1,8 @@
 ﻿@using FxCore.Models;
 
-<table class="table table-striped table-responsive-sm caption-top">
+@inject EventBroker broker
+
+<table class="table table-striped table-hover table-responsive-sm caption-top">
     <caption>All currencies quoted against the AZN (base currency).</caption>
     <thead>
         <tr>
@@ -14,7 +16,7 @@
     <tbody class="table-group-divider">
         @foreach (var item in Rates)
         {
-            <tr>
+            <tr @onclick="@(()=>OnClick(item.Code))" style="cursor: pointer;">
                 <td>@item.Name</td>
                 <td>@item.Code</td>
                 <td>@item.Value</td>
@@ -22,10 +24,12 @@
                 @if (item.Difference < 0)
                 {
                     <td><span class="oi oi-arrow-bottom text-danger" aria-hidden="true"></span></td>
-                }else if(item.Difference > 0)
+                }
+                else if (item.Difference > 0)
                 {
                     <td><span class="oi oi-arrow-top text-success" aria-hidden="true"></span></td>
-                }else
+                }
+                else
                 {
                     <td><span class="oi oi-minus" aria-hidden="true"></span></td>
                 }
@@ -39,4 +43,9 @@
 
     [Parameter, EditorRequired]
     public List<Rate> Rates { get; set; }
+
+    private void OnClick(string currency)
+    {
+        broker.OnCurrencySelected(currency);
+    }
 }

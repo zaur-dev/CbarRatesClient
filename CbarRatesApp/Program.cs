@@ -8,4 +8,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["RatesAPI:BaseAddress"]) });
 
+builder.Services.AddSingleton<EventBroker>();
+
 await builder.Build().RunAsync();

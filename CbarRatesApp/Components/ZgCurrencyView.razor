@@ -1,0 +1,85 @@
+﻿@using CbarRatesApp.Components;
+@using System.Net.Http
+@using System.Net.Http.Json
+@using CbarRatesApp.Models;
+@using FxCore.Models;
+
+@inject HttpClient client
+
+
+<div>
+    <div class="card">
+        @if (showChart)
+        {
+            <ZgLineChart Id="MyLineChart" Config="config" />
+        }
+        else
+        {
+            <ZgLoaderCascade />
+        }
+    </div>
+
+    <div class="card mt-4">
+        @if (showChart)
+        {
+            <ZgCurrencyRatesList CurrencyCode="@CurrencyCode" Data="fxList" />
+        }
+        else
+        {
+            <ZgLoaderCascade />
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string CurrencyCode { get; set; }
+
+    List<DailyFx> fxList;
+    ChartConfig config;
+    bool showChart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        fxList = await client.GetFromJsonAsync<List<DailyFx>>("api/get/range/01-01-2023/31-01-2023");
+        LoadChart();
+    }
+
+    protected override void OnParametersSet()
+    {
+        LoadChart();
+    }
+
+    private void LoadChart()
+    {
+        var data = new DataItem[fxList.Count];
+        for (int i = 0; i < fxList.Count; i++)
+        {
+            data[i] = new DataItem()
+                {
+                    y = fxList[i].Rates.Where(x => x.Code == CurrencyCode).First().Value.ToString(),
+                    x = fxList[i].Date.ToString("d")
+                };
+        }
+
+        var dataset = new Dataset()
+            {
+                Label = CurrencyCode,
+                Data = data
+            };
+
+        config = new ChartConfig()
+            {
+                Type = ChartType.line.ToString(),
+                Data = new Data() { Datasets = new Dataset[1] },
+                Options = new Options() { Responsive = true }
+            };
+
+        config.Data.Datasets[0] = dataset;
+
+        showChart = true;
+    }
+
+
+}
