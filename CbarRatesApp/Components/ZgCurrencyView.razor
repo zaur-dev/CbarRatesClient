@@ -8,41 +8,88 @@
 
 
 <div>
-    <div class="card">
-        @if (showChart)
-        {
-            <ZgLineChart Id="MyLineChart" Config="config" />
-        }
-        else
-        {
-            <ZgLoaderCascade />
-        }
+    <div class="card mt-4">
+        <div class="card-header">
+            @if (rateInfo != null)
+            {
+                <div class="row">
+                <div class="col">
+                    <p class="h5">@DateTime.Now.ToShortDateString()</p>
+                    <p class="h5">AZN 1 = @CurrencyCode @rateInfo.Rate	@rateInfo.Difference (@rateInfo.DifferencePercent) </p>
+                </div>
+                <div class="col">
+                    <div>
+                        Change from 1 February 1999 to 9 March 2023
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div>Min (28 September 2022)</div>
+                            <div>@rateInfo.MinRate</div>
+                        </div>
+                        <div class="col">
+                            <div>Max (30 March 2022)</div>
+                            <div>@rateInfo.MaxRate</div>
+                        </div>
+                        <div class="col">
+                            <div>Average</div>
+                            <div>@rateInfo.AverageRate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+            
+        </div>
+        <div class="card-body" style="min-height:400px ">
+            @if (showChart)
+            {
+                <ZgLineChart Id="MyLineChart" Config="config" />
+            }
+            else
+            {
+                <ZgLoaderCascade />
+            }
+        </div>
     </div>
 
     <div class="card mt-4">
-        @if (showChart)
-        {
-            <ZgCurrencyRatesList CurrencyCode="@CurrencyCode" Data="fxList" />
-        }
-        else
-        {
-            <ZgLoaderCascade />
-        }
+        <div class="card-body">
+            @if (showChart)
+            {
+                <ZgCurrencyRatesList CurrencyCode="@CurrencyCode" Data="fxList" />
+
+
+
+
+            }
+            else
+            {
+                <ZgLoaderCascade />
+            }
+        </div>
     </div>
 </div>
 
 @code {
-
     [Parameter]
     public string CurrencyCode { get; set; }
 
     List<DailyFx> fxList;
     ChartConfig config;
     bool showChart;
+    RateInfo rateInfo;
 
     protected override async Task OnInitializedAsync()
     {
-        fxList = await client.GetFromJsonAsync<List<DailyFx>>("api/get/range/01-01-2023/31-01-2023");
+        if (string.IsNullOrEmpty(CurrencyCode))
+        {
+            CurrencyCode = "EUR";
+        }
+
+        fxList = await client.GetFromJsonAsync<List<DailyFx>>("api/get/range/01-01-2023/31-03-2023");
+
+        rateInfo = GetRateInfo(fxList, CurrencyCode, DateTime.Now);
+
         LoadChart();
     }
 
@@ -81,5 +128,35 @@
         showChart = true;
     }
 
+    private RateInfo GetRateInfo(List<DailyFx> dailyFxlist, string currencyCode, DateTime date)
+    {
+        var info = new RateInfo();
+        var rateList = new List<decimal>();
+
+        info.Rate = dailyFxlist.Where(x => x.Date.Date == date.Date).First().Rates
+                          .Where(x => x.Code == currencyCode).First().Value;
+
+        var prevRate = dailyFxlist.Where(x => x.Date.Date == date.AddDays(-1).Date).First().Rates
+                          .Where(x => x.Code == currencyCode).First().Value;
+
+        info.Difference = info.Rate - prevRate;
+        info.DifferencePercent = Math.Round((info.Difference / prevRate) * 100, 4);
+
+        info.MinRate = dailyFxlist.Min(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
+        info.MaxRate = dailyFxlist.Max(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
+        info.AverageRate = Math.Round(dailyFxlist.Average(x => x.Rates.Where(x => x.Code == currencyCode).First().Value),4);
+
+        return info;
+    }
+
+    private class RateInfo
+    {
+        public decimal Rate { get; set; }
+        public decimal Difference { get; set; }
+        public decimal DifferencePercent { get; set; }
+        public decimal MinRate { get; set; }
+        public decimal MaxRate { get; set; }
+        public decimal AverageRate { get; set; }
+    }
 
 }

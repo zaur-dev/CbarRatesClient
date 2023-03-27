@@ -1,3 +1,13 @@
 ﻿@page "/docs"
 
-<CbarRatesApp.Components.ZgCurrencyView />
+    <div class="container-fluid">
+        <CbarRatesApp.Components.ZgCurrencyView CurrencyCode="@CurrencyCode" />
+    </div>
+
+
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string CurrencyCode { get; set; }
+}
