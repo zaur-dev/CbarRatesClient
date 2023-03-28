@@ -18,7 +18,7 @@
                                 <strong>
                                     @periodEnd.ToShortDateString()
                                     <br>
-                                    AZN 1 = @CurrencyCode @rateInfo.Rate
+                                    @CurrencyCode @rateInfo.Nominal = AZN @rateInfo.Rate
                                     <span class="@rateInfo.DifferenceColor">
                                         @rateInfo.Difference.ToString(format) (@rateInfo.DifferencePercent.ToString(format)%)
                                     </span>
@@ -210,7 +210,8 @@
 
         info.Rate = fxList.Where(x => x.Date.Date == latestDate.Date).First().Rates
                           .Where(x => x.Code == CurrencyCode).First().Value;
-
+        info.Nominal = fxList.Where(x => x.Date.Date == latestDate.Date).First().Rates
+                                  .Where(x => x.Code == CurrencyCode).First().Nominal;
 
         var prevRate = fxList.Where(x => x.Date.Date == latestDate.AddDays(-1).Date).First().Rates
                           .Where(x => x.Code == CurrencyCode).First().Value;
@@ -239,6 +240,7 @@
     private class RateInfo
     {
         public decimal Rate { get; set; }
+        public int Nominal { get; set; }
         public decimal Difference { get; set; }
         public decimal DifferencePercent { get; set; }
         public string DifferenceColor { get; set; }
