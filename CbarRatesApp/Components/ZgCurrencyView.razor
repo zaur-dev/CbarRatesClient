@@ -127,8 +127,8 @@
     ChartConfig config;
     bool showChart;
     RateInfo rateInfo;
-    DateTime periodStart;
-    DateTime periodEnd;
+    DateTime periodStart = DateTime.Now.AddMonths(-1);
+    DateTime periodEnd = DateTime.Now;
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,13 +137,18 @@
             CurrencyCode = "EUR";
         }
 
-        fxList = await client.GetFromJsonAsync<List<DailyFx>>($"api/get/range/{DateTime.Now.AddMonths(-1).ToString("dd-MM-yyyy")}/{DateTime.Now.ToString("dd-MM-yyyy")}");
-        
-        periodEnd = fxList.OrderByDescending(x => x.Date).First().Date;
+        await LoadData(periodStart, periodEnd);
+
         periodStart = periodEnd.AddMonths(-1);
 
         rateInfo = GetRateInfo(CurrencyCode);
         LoadChart();
+    }
+
+    private async Task LoadData(DateTime start, DateTime end)
+    {
+        fxList = await client.GetFromJsonAsync<List<DailyFx>>($"api/get/range/{start.ToString("dd-MM-yyyy")}/{end.ToString("dd-MM-yyyy")}");
+        periodEnd = fxList.OrderByDescending(x => x.Date).First().Date;
     }
 
     private void LoadChart()
@@ -204,8 +209,7 @@
     {
         showChart = false;
         StateHasChanged();
-        fxList = await client.GetFromJsonAsync<List<DailyFx>>($"api/get/range/{periodStart.ToString("dd-MM-yyyy")}/{periodEnd.ToString("dd-MM-yyyy")}");
-        periodEnd = fxList.OrderByDescending(x => x.Date).First().Date;
+        await LoadData(periodStart, periodEnd);
         rateInfo = GetRateInfo(CurrencyCode);
         LoadChart();
         StateHasChanged();
