@@ -1,0 +1,39 @@
+﻿@using CbarRatesApp.Models;
+
+
+
+@inject IJSRuntime JS
+
+<canvas id="@Id"></canvas>
+
+
+@code {
+    private IJSObjectReference? module;
+
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string[] Data { get; set; }
+    [Parameter]
+    public string[] Labels { get; set; }
+
+    [Parameter]
+    public ChartConfig Config { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/ZgLineChart.razor.js");
+        if (firstRender)
+        {
+            await module.InvokeVoidAsync("setup", Id, Config);
+        }
+        else
+        {
+            await module.InvokeVoidAsync("update", Id, Config);
+        }
+
+
+    }
+
+
+}
