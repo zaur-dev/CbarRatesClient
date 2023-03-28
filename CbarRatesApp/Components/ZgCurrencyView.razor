@@ -135,12 +135,12 @@
             CurrencyCode = "EUR";
         }
 
-        periodEnd = DateTime.Now;
+        fxList = await client.GetFromJsonAsync<List<DailyFx>>($"api/get/range/{DateTime.Now.AddMonths(-1).ToString("dd-MM-yyyy")}/{DateTime.Now.ToString("dd-MM-yyyy")}");
+        
+        periodEnd = fxList.OrderByDescending(x => x.Date).First().Date;
         periodStart = periodEnd.AddMonths(-1);
 
-        fxList = await client.GetFromJsonAsync<List<DailyFx>>($"api/get/range/{periodStart.ToString("dd-MM-yyyy")}/{periodEnd.ToString("dd-MM-yyyy")}");
-
-        rateInfo = GetRateInfo(fxList, CurrencyCode, DateTime.Now);
+        rateInfo = GetRateInfo(fxList, CurrencyCode);
         LoadChart();
     }
 
@@ -175,15 +175,18 @@
         showChart = true;
     }
 
-    private RateInfo GetRateInfo(List<DailyFx> dailyFxlist, string currencyCode, DateTime date)
+    private RateInfo GetRateInfo(List<DailyFx> dailyFxlist, string currencyCode)
     {
         var info = new RateInfo();
         var rateList = new List<decimal>();
-
-        info.Rate = dailyFxlist.Where(x => x.Date.Date == date.Date).First().Rates
+       
+        DateTime latestDate = dailyFxlist.OrderByDescending(x => x.Date).First().Date;
+        
+        info.Rate = dailyFxlist.Where(x => x.Date.Date == latestDate.Date).First().Rates
                           .Where(x => x.Code == currencyCode).First().Value;
 
-        var prevRate = dailyFxlist.Where(x => x.Date.Date == date.AddDays(-1).Date).First().Rates
+
+        var prevRate = dailyFxlist.Where(x => x.Date.Date == latestDate.AddDays(-1).Date).First().Rates
                           .Where(x => x.Code == currencyCode).First().Value;
 
         info.Difference = info.Rate - prevRate;
@@ -201,7 +204,7 @@
         showChart = false;
         StateHasChanged();
         fxList = await client.GetFromJsonAsync<List<DailyFx>>($"api/get/range/{periodStart.ToString("dd-MM-yyyy")}/{periodEnd.ToString("dd-MM-yyyy")}");
-        rateInfo = GetRateInfo(fxList, CurrencyCode, periodEnd);
+        rateInfo = GetRateInfo(fxList, CurrencyCode);
         LoadChart();
         StateHasChanged();
     }
