@@ -1,11 +1,35 @@
 ﻿@page "/"
 
+@*@implements IDisposable*@
+@inject EventBroker broker
+
 <PageTitle>CBAR rates</PageTitle>
-<br />
-<br />
 
 <div class="container-fluid">
-    <div class="d-flex justify-content-center">
-        <CbarRatesApp.Components.ZgDailyRatesView />
+
+    <div class="row mt-4">
+        <div class="col">
+            <CbarRatesApp.Components.ZgDailyRatesView />
+        </div>
     </div>
 </div>
+
+@code {
+    //string selectedCurrencyCode = "EUR";
+
+    //protected override void OnInitialized()
+    //{
+    //    broker.CurrencySelected += SetCurrentCurrency;
+    //}
+
+    //private void SetCurrentCurrency(object sender, CurrencySelectedEventArgs e)
+    //{
+    //    selectedCurrencyCode = e.SelectedCurrencyCode;
+    //    StateHasChanged();
+    //}
+
+    //public void Dispose()
+    //{
+    //    broker.CurrencySelected -= SetCurrentCurrency;
+    //}
+}

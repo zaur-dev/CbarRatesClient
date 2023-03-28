@@ -29,18 +29,18 @@
 
         if (dark)
         {
-            await module.InvokeVoidAsync("SetThemeAttribute", "dark");
+            await module.InvokeVoidAsync("setThemeAttribute", "dark");
         }
         else
         {
-            await module.InvokeVoidAsync("SetThemeAttribute", "light");
+            await module.InvokeVoidAsync("setThemeAttribute", "light");
         }
     }
     private async Task CheckColorScheme()
     {
         module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/ZgThemeToggler.razor.js");
 
-        dark = await module.InvokeAsync<bool>("CheckColorScheme");
+        dark = await module.InvokeAsync<bool>("checkColorScheme");
         StateHasChanged();
     }
 
