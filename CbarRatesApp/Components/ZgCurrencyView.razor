@@ -50,19 +50,19 @@
                             <div class="col">
                                 @if (showChart)
                                 {
-                                    <select class="form-select form-select-sm" @onchange="(ChangeEventArgs e)=>{ CurrencyCode = e.Value.ToString(); ReloadChart();}">
-                                    @foreach (var item in fxList.First(x => x.Date == periodEnd.Date).Rates)
-                                    {
-                                        @if (item.Code == CurrencyCode)
+                                    <select class="form-select form-select-sm" @onchange="CurrencyChangeHandler">
+                                        @foreach (var item in fxList.First(x => x.Date == periodEnd.Date).Rates)
                                         {
-                                            <option selected value="@item.Code">@item.Name</option>
+                                            @if (item.Code == CurrencyCode)
+                                            {
+                                                <option selected value="@item.Code">@item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Code">@item.Name</option>
+                                            }
                                         }
-                                        else
-                                        {
-                                            <option value="@item.Code">@item.Name</option>
-                                        }
-                                    }
-                                </select>
+                                    </select>
                                 }
                             </div>
                             <div class="col">
@@ -138,11 +138,19 @@
         }
 
         await LoadData(periodStart, periodEnd);
-
         periodStart = periodEnd.AddMonths(-1);
+        SetRateInfo();
+        SetChartConfig();
+    }
 
-        rateInfo = GetRateInfo(CurrencyCode);
-        LoadChart();
+    private void CurrencyChangeHandler(ChangeEventArgs e)
+    {
+        CurrencyCode = e.Value.ToString(); 
+        showChart = false;
+        StateHasChanged();
+        SetRateInfo();
+        SetChartConfig();
+        StateHasChanged();
     }
 
     private async Task LoadData(DateTime start, DateTime end)
@@ -151,7 +159,7 @@
         periodEnd = fxList.OrderByDescending(x => x.Date).First().Date;
     }
 
-    private void LoadChart()
+    private void SetChartConfig()
     {
         var data = new DataItem[fxList.Count];
         for (int i = 0; i < fxList.Count; i++)
@@ -181,28 +189,28 @@
         showChart = true;
     }
 
-    private RateInfo GetRateInfo(string currencyCode)
+    private void SetRateInfo()
     {
         var info = new RateInfo();
         var rateList = new List<decimal>();
-       
+
         DateTime latestDate = fxList.OrderByDescending(x => x.Date).First().Date;
-        
+
         info.Rate = fxList.Where(x => x.Date.Date == latestDate.Date).First().Rates
-                          .Where(x => x.Code == currencyCode).First().Value;
+                          .Where(x => x.Code == CurrencyCode).First().Value;
 
 
         var prevRate = fxList.Where(x => x.Date.Date == latestDate.AddDays(-1).Date).First().Rates
-                          .Where(x => x.Code == currencyCode).First().Value;
+                          .Where(x => x.Code == CurrencyCode).First().Value;
 
         info.Difference = info.Rate - prevRate;
         info.DifferencePercent = Math.Round((info.Difference / prevRate) * 100, 4);
 
-        info.MinRate = fxList.Min(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
-        info.MaxRate = fxList.Max(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
-        info.AverageRate = Math.Round(fxList.Average(x => x.Rates.Where(x => x.Code == currencyCode).First().Value), 4);
+        info.MinRate = fxList.Min(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value);
+        info.MaxRate = fxList.Max(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value);
+        info.AverageRate = Math.Round(fxList.Average(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value), 4);
 
-        return info;
+        rateInfo = info;
     }
 
     private async Task ReloadChart()
@@ -210,8 +218,8 @@
         showChart = false;
         StateHasChanged();
         await LoadData(periodStart, periodEnd);
-        rateInfo = GetRateInfo(CurrencyCode);
-        LoadChart();
+        SetRateInfo();
+        SetChartConfig();
         StateHasChanged();
     }
 
