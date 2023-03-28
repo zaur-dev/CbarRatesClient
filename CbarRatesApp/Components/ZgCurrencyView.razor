@@ -48,8 +48,9 @@
                     <div class="col">
                         <div class="row">
                             <div class="col">
-
-                                <select class="form-select form-select-sm" aria-label="Default select example">
+                                @if (showChart)
+                                {
+                                    <select class="form-select form-select-sm" @onchange="(ChangeEventArgs e)=>{ CurrencyCode = e.Value.ToString(); ReloadChart();}">
                                     @foreach (var item in fxList.First(x => x.Date == periodEnd.Date).Rates)
                                     {
                                         @if (item.Code == CurrencyCode)
@@ -62,6 +63,7 @@
                                         }
                                     }
                                 </select>
+                                }
                             </div>
                             <div class="col">
                                 <input type="date" value="@periodStart.ToString("yyyy-MM-dd")" @onchange="(ChangeEventArgs e)=>{ periodStart = DateTime.Parse(e.Value.ToString()); ReloadChart();}" class="form-control form-control-sm" />
@@ -140,13 +142,12 @@
         periodEnd = fxList.OrderByDescending(x => x.Date).First().Date;
         periodStart = periodEnd.AddMonths(-1);
 
-        rateInfo = GetRateInfo(fxList, CurrencyCode);
+        rateInfo = GetRateInfo(CurrencyCode);
         LoadChart();
     }
 
     private void LoadChart()
     {
-
         var data = new DataItem[fxList.Count];
         for (int i = 0; i < fxList.Count; i++)
         {
@@ -175,26 +176,26 @@
         showChart = true;
     }
 
-    private RateInfo GetRateInfo(List<DailyFx> dailyFxlist, string currencyCode)
+    private RateInfo GetRateInfo(string currencyCode)
     {
         var info = new RateInfo();
         var rateList = new List<decimal>();
        
-        DateTime latestDate = dailyFxlist.OrderByDescending(x => x.Date).First().Date;
+        DateTime latestDate = fxList.OrderByDescending(x => x.Date).First().Date;
         
-        info.Rate = dailyFxlist.Where(x => x.Date.Date == latestDate.Date).First().Rates
+        info.Rate = fxList.Where(x => x.Date.Date == latestDate.Date).First().Rates
                           .Where(x => x.Code == currencyCode).First().Value;
 
 
-        var prevRate = dailyFxlist.Where(x => x.Date.Date == latestDate.AddDays(-1).Date).First().Rates
+        var prevRate = fxList.Where(x => x.Date.Date == latestDate.AddDays(-1).Date).First().Rates
                           .Where(x => x.Code == currencyCode).First().Value;
 
         info.Difference = info.Rate - prevRate;
         info.DifferencePercent = Math.Round((info.Difference / prevRate) * 100, 4);
 
-        info.MinRate = dailyFxlist.Min(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
-        info.MaxRate = dailyFxlist.Max(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
-        info.AverageRate = Math.Round(dailyFxlist.Average(x => x.Rates.Where(x => x.Code == currencyCode).First().Value), 4);
+        info.MinRate = fxList.Min(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
+        info.MaxRate = fxList.Max(x => x.Rates.Where(x => x.Code == currencyCode).First().Value);
+        info.AverageRate = Math.Round(fxList.Average(x => x.Rates.Where(x => x.Code == currencyCode).First().Value), 4);
 
         return info;
     }
@@ -204,7 +205,8 @@
         showChart = false;
         StateHasChanged();
         fxList = await client.GetFromJsonAsync<List<DailyFx>>($"api/get/range/{periodStart.ToString("dd-MM-yyyy")}/{periodEnd.ToString("dd-MM-yyyy")}");
-        rateInfo = GetRateInfo(fxList, CurrencyCode);
+        periodEnd = fxList.OrderByDescending(x => x.Date).First().Date;
+        rateInfo = GetRateInfo(CurrencyCode);
         LoadChart();
         StateHasChanged();
     }
