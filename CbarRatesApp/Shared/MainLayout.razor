@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
 <div>
-    <CbarRatesApp.Components.ZgNavBar Links="links"/>
+    @*<CbarRatesApp.Components.ZgNavBar Links="links"/>*@
+    <CbarRatesApp.Components.ZgNavBarNew />
     <main>
         <article>
             @Body
@@ -10,7 +11,7 @@
     <footer class="bg-body-tertiary py-4 mt-5">
         <div class="container">
             <p>
-                CBAR rates footer
+                zaur.dev
             </p>
         </div>
     </footer>
@@ -24,7 +25,7 @@
         links = new Dictionary<string, string>
         {
             { "Home", "/" },
-            { "Docs", "docs" },
+            { "Currency info", "info" },
             { "About", "about" },
         };
     }
