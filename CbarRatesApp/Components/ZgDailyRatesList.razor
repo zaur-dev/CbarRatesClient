@@ -1,6 +1,7 @@
 ﻿@using FxCore.Models;
 
 @inject EventBroker broker
+@inject NavigationManager NavigationManager
 
 <table class="table table-striped table-hover table-responsive-sm caption-top">
     <caption>All currencies quoted against the AZN (base currency).</caption>
@@ -46,6 +47,7 @@
 
     private void OnClick(string currency)
     {
-        broker.OnCurrencySelected(currency);
+        //broker.OnCurrencySelected(currency);
+        NavigationManager.NavigateTo($"/info?CurrencyCode={currency}");
     }
 }

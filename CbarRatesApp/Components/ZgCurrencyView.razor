@@ -12,17 +12,25 @@
             @if (rateInfo != null)
             {
                 <div class="row">
-                    <div class="col">
-                        <p class="">@periodEnd.ToShortDateString()</p>
-                        <p class="">AZN 1 = @CurrencyCode @rateInfo.Rate	@rateInfo.Difference (@rateInfo.DifferencePercent%) </p>
-                    </div>
-                    <div class="col">
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                         <div class="row">
-                            <div class="col">
-                                Changes from @periodStart.ToShortDateString() to @periodEnd.ToShortDateString()
-                            </div>
+                            <p>
+                                <strong>
+                                    @periodEnd.ToShortDateString()
+                                    <br>
+                                    AZN 1 = @CurrencyCode @rateInfo.Rate
+                                    <span class="@rateInfo.DifferenceColor">
+                                        @rateInfo.Difference.ToString(format) (@rateInfo.DifferencePercent.ToString(format)%)
+                                    </span>
+                                </strong>
+                            </p>
                         </div>
                         <div class="row">
+                            <div class="col">
+                                <p>Changes from @periodStart.ToShortDateString() to @periodEnd.ToShortDateString()</p>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <div class="col">
                                 <div>Min</div>
                                 <div>@rateInfo.MinRate</div>
@@ -37,17 +45,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-1); ReloadChart();}" class="btn btn-outline-primary">1 month</button>
-                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-3); ReloadChart();}" class="btn btn-outline-primary">3 months</button>
-                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-6); ReloadChart();}" class="btn btn-outline-primary">6 months</button>
-                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddYears(-1); ReloadChart();}" class="btn btn-outline-primary">1 year</button>
-                    </div>
-                    <div class="col">
+                    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
                         <div class="row">
-                            <div class="col">
+                            <div class="col-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4 mb-3">
                                 @if (showChart)
                                 {
                                     <select class="form-select form-select-sm" @onchange="CurrencyChangeHandler">
@@ -65,11 +65,21 @@
                                     </select>
                                 }
                             </div>
-                            <div class="col">
+                            <div class="col-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4 mb-3">
                                 <input type="date" value="@periodStart.ToString("yyyy-MM-dd")" @onchange="(ChangeEventArgs e)=>{ periodStart = DateTime.Parse(e.Value.ToString()); ReloadChart();}" class="form-control form-control-sm" />
                             </div>
-                            <div class="col">
+                            <div class="col-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4 mb-3">
                                 <input type="date" value="@periodEnd.ToString("yyyy-MM-dd")" @onchange="(ChangeEventArgs e)=>{ periodEnd = DateTime.Parse(e.Value.ToString()); ReloadChart();}" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div class="btn-group d-flex">
+                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-1); ReloadChart();}" class="btn btn-outline-primary">1 month</button>
+                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-3); ReloadChart();}" class="btn btn-outline-primary">3 months</button>
+                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-6); ReloadChart();}" class="btn btn-outline-primary">6 months</button>
+                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddYears(-1); ReloadChart();}" class="btn btn-outline-primary">1 year</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -130,6 +140,8 @@
     DateTime periodStart = DateTime.Now.AddMonths(-1);
     DateTime periodEnd = DateTime.Now;
 
+    string format = String.Format("+0.{0};-0.{0};+0.{0}", new string('0', 4));
+
     protected override async Task OnInitializedAsync()
     {
         if (string.IsNullOrEmpty(CurrencyCode))
@@ -145,7 +157,7 @@
 
     private void CurrencyChangeHandler(ChangeEventArgs e)
     {
-        CurrencyCode = e.Value.ToString(); 
+        CurrencyCode = e.Value.ToString();
         showChart = false;
         StateHasChanged();
         SetRateInfo();
@@ -205,6 +217,7 @@
 
         info.Difference = info.Rate - prevRate;
         info.DifferencePercent = Math.Round((info.Difference / prevRate) * 100, 4);
+        info.DifferenceColor = info.Difference >= 0 ? "text-success" : "text-danger";
 
         info.MinRate = fxList.Min(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value);
         info.MaxRate = fxList.Max(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value);
@@ -228,6 +241,7 @@
         public decimal Rate { get; set; }
         public decimal Difference { get; set; }
         public decimal DifferencePercent { get; set; }
+        public string DifferenceColor { get; set; }
         public decimal MinRate { get; set; }
         public decimal MaxRate { get; set; }
         public decimal AverageRate { get; set; }
