@@ -6,125 +6,128 @@
 
 @inject HttpClient client
 
-<div>
-    <div class="card mt-4">
-        <div class="card-header">
-            @if (rateInfo != null)
-            {
-                <div class="row">
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                        <div class="row">
-                            <p>
-                                <strong>
-                                    @periodEnd.ToShortDateString()
-                                    <br>
-                                    @CurrencyCode @rateInfo.Nominal = AZN @rateInfo.Rate
-                                    <span class="@rateInfo.DifferenceColor">
-                                        @rateInfo.Difference.ToString(format) (@rateInfo.DifferencePercent.ToString(format)%)
-                                    </span>
-                                </strong>
-                            </p>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <p>Changes from @periodStart.ToShortDateString() to @periodEnd.ToShortDateString()</p>
+<div class="row">
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-9">
+        <div class="card mt-4">
+            <div class="card-header">
+                @if (rateInfo != null)
+                {
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+                            <div class="row">
+                                <p>
+                                    <strong>
+                                        @periodEnd.ToShortDateString()
+                                        <br>
+                                        @CurrencyCode @rateInfo.Nominal = AZN @rateInfo.Rate
+                                        <span class="@rateInfo.DifferenceColor">
+                                            @rateInfo.Difference.ToString(format) (@rateInfo.DifferencePercent.ToString(format)%)
+                                        </span>
+                                    </strong>
+                                </p>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p>Changes from @periodStart.ToShortDateString() to @periodEnd.ToShortDateString()</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <div>Min</div>
+                                    <div>@rateInfo.MinRate</div>
+                                </div>
+                                <div class="col">
+                                    <div>Max</div>
+                                    <div>@rateInfo.MaxRate</div>
+                                </div>
+                                <div class="col">
+                                    <div>Average</div>
+                                    <div>@rateInfo.AverageRate</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <div>Min</div>
-                                <div>@rateInfo.MinRate</div>
-                            </div>
-                            <div class="col">
-                                <div>Max</div>
-                                <div>@rateInfo.MaxRate</div>
-                            </div>
-                            <div class="col">
-                                <div>Average</div>
-                                <div>@rateInfo.AverageRate</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
-                        <div class="row">
-                            <div class="col-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4 mb-3">
-                                @if (showChart)
-                                {
-                                    <select class="form-select form-select-sm" @onchange="CurrencyChangeHandler">
-                                        @foreach (var item in fxList.First(x => x.Date == periodEnd.Date).Rates)
-                                        {
-                                            @if (item.Code == CurrencyCode)
+                        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+                            <div class="row">
+                                <div class="col-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4 mb-3">
+                                    @if (showChart)
+                                    {
+                                        <select class="form-select form-select-sm" @onchange="CurrencyChangeHandler">
+                                            @foreach (var item in fxList.First(x => x.Date == periodEnd.Date).Rates)
                                             {
-                                                <option selected value="@item.Code">@item.Name</option>
+                                                @if (item.Code == CurrencyCode)
+                                                {
+                                                    <option selected value="@item.Code">@item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Code">@item.Name</option>
+                                                }
                                             }
-                                            else
-                                            {
-                                                <option value="@item.Code">@item.Name</option>
-                                            }
-                                        }
-                                    </select>
-                                }
+                                        </select>
+                                    }
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4 mb-3">
+                                    <input type="date" value="@periodStart.ToString("yyyy-MM-dd")" @onchange="(ChangeEventArgs e)=>{ periodStart = DateTime.Parse(e.Value.ToString()); ReloadChart();}" class="form-control form-control-sm" />
+                                </div>
+                                <div class="col-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4 mb-3">
+                                    <input type="date" value="@periodEnd.ToString("yyyy-MM-dd")" @onchange="(ChangeEventArgs e)=>{ periodEnd = DateTime.Parse(e.Value.ToString()); ReloadChart();}" class="form-control form-control-sm" />
+                                </div>
                             </div>
-                            <div class="col-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4 mb-3">
-                                <input type="date" value="@periodStart.ToString("yyyy-MM-dd")" @onchange="(ChangeEventArgs e)=>{ periodStart = DateTime.Parse(e.Value.ToString()); ReloadChart();}" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4 mb-3">
-                                <input type="date" value="@periodEnd.ToString("yyyy-MM-dd")" @onchange="(ChangeEventArgs e)=>{ periodEnd = DateTime.Parse(e.Value.ToString()); ReloadChart();}" class="form-control form-control-sm" />
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <div class="btn-group d-flex">
-                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-1); ReloadChart();}" class="btn btn-outline-primary">1 month</button>
-                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-3); ReloadChart();}" class="btn btn-outline-primary">3 months</button>
-                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-6); ReloadChart();}" class="btn btn-outline-primary">6 months</button>
-                                    <button type="button" @onclick="()=>{periodStart = periodEnd.AddYears(-1); ReloadChart();}" class="btn btn-outline-primary">1 year</button>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <div class="btn-group d-flex">
+                                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-1); ReloadChart();}" class="btn btn-outline-primary">1 month</button>
+                                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-3); ReloadChart();}" class="btn btn-outline-primary">3 months</button>
+                                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddMonths(-6); ReloadChart();}" class="btn btn-outline-primary">6 months</button>
+                                        <button type="button" @onclick="()=>{periodStart = periodEnd.AddYears(-1); ReloadChart();}" class="btn btn-outline-primary">1 year</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            }
+                }
 
-        </div>
-        <div class="card-body" style="min-height:500px ">
-            @if (showChart)
-            {
-                <ZgLineChart Id="MyLineChart" Config="config" />
-            }
-            else
-            {
-                <ZgLoaderCascade />
-            }
+            </div>
+            <div class="card-body" style="min-height:500px ">
+                @if (showChart)
+                {
+                    <ZgLineChart Id="MyLineChart" Config="config" />
+                }
+                else
+                {
+                    <ZgLoaderCascade />
+                }
+            </div>
         </div>
     </div>
-
-    <div class="card mt-4">
-        <div class="card-body">
-            @if (showChart)
-            {
-                <table class="table table-striped table-responsive-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">Date</th>
-                            <th scope="col">Rate</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        @foreach (var item in fxList)
-                        {
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-3">
+        <div class="card mt-4">
+            <div class="card-body">
+                @if (showChart)
+                {
+                    <table class="table table-striped table-responsive-sm">
+                        <thead>
                             <tr>
-                                <td>@item.Date.ToString("d")</td>
-                                <td>@item.Rates.First(r=>r.Code == CurrencyCode).Value</td>
+                                <th scope="col">Date</th>
+                                <th scope="col">Rate</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <ZgLoaderCascade />
-            }
+                        </thead>
+                        <tbody class="table-group-divider">
+                            @foreach (var item in fxList)
+                            {
+                                <tr>
+                                    <td>@item.Date.ToString("d")</td>
+                                    <td>@item.Rates.First(r=>r.Code == CurrencyCode.ToUpper()).Value</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <ZgLoaderCascade />
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -178,7 +181,7 @@
         {
             data[i] = new DataItem()
                 {
-                    y = fxList[i].Rates.Where(x => x.Code == CurrencyCode).First().Value.ToString(),
+                    y = fxList[i].Rates.Where(x => x.Code == CurrencyCode.ToUpper()).First().Value.ToString(),
                     x = fxList[i].Date.ToString("d")
                 };
         }
@@ -209,20 +212,20 @@
         DateTime latestDate = fxList.OrderByDescending(x => x.Date).First().Date;
 
         info.Rate = fxList.Where(x => x.Date.Date == latestDate.Date).First().Rates
-                          .Where(x => x.Code == CurrencyCode).First().Value;
+                          .Where(x => x.Code == CurrencyCode.ToUpper()).First().Value;
         info.Nominal = fxList.Where(x => x.Date.Date == latestDate.Date).First().Rates
-                                  .Where(x => x.Code == CurrencyCode).First().Nominal;
+                                  .Where(x => x.Code == CurrencyCode.ToUpper()).First().Nominal;
 
         var prevRate = fxList.Where(x => x.Date.Date == latestDate.AddDays(-1).Date).First().Rates
-                          .Where(x => x.Code == CurrencyCode).First().Value;
+                          .Where(x => x.Code == CurrencyCode.ToUpper()).First().Value;
 
         info.Difference = info.Rate - prevRate;
         info.DifferencePercent = Math.Round((info.Difference / prevRate) * 100, 4);
         info.DifferenceColor = info.Difference >= 0 ? "text-success" : "text-danger";
 
-        info.MinRate = fxList.Min(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value);
-        info.MaxRate = fxList.Max(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value);
-        info.AverageRate = Math.Round(fxList.Average(x => x.Rates.Where(x => x.Code == CurrencyCode).First().Value), 4);
+        info.MinRate = fxList.Min(x => x.Rates.Where(x => x.Code == CurrencyCode.ToUpper()).First().Value);
+        info.MaxRate = fxList.Max(x => x.Rates.Where(x => x.Code == CurrencyCode.ToUpper()).First().Value);
+        info.AverageRate = Math.Round(fxList.Average(x => x.Rates.Where(x => x.Code == CurrencyCode.ToUpper()).First().Value), 4);
 
         rateInfo = info;
     }
