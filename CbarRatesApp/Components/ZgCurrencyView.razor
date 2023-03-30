@@ -158,6 +158,15 @@
         SetChartConfig();
     }
 
+    protected override void OnParametersSet()
+    {
+        if (string.IsNullOrEmpty(CurrencyCode))
+        {
+            CurrencyCode = "EUR";
+
+        }
+    }
+
     private void CurrencyChangeHandler(ChangeEventArgs e)
     {
         CurrencyCode = e.Value.ToString();
